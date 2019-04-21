@@ -9,18 +9,26 @@ interface SortingProps {
   defaultSortAscending?: boolean;
 }
 
-interface DataTableColumn {
-  dataIndex: string;
+interface ColumnBasics {
   label?: string;
-  render?: (props: any) => any;
-  type?: (props: any) => any;
+  renderColumn?: (props: any) => any;
+  renderFull?: (props: any) => any;
 }
+interface ActionColumn extends ColumnBasics {
+  action: (props: any) => any;
+}
+
+interface DisplayColumn extends ColumnBasics {
+  dataIndex: string;
+}
+
+type Column = ActionColumn | DisplayColumn;
 
 interface DataTableProps {
   data: Array<Map>;
   keyField: string;
   sorting?: SortingProps;
-  columns?: Array<DataTableColumn>;
+  columns?: Array<Column>;
 }
 
 const DataTable = (props: DataTableProps) => {
@@ -58,11 +66,15 @@ const DataTable = (props: DataTableProps) => {
       <Table.Header>
         <Table.Row>
           {columns &&
-            columns.map((column: DataTableColumn) => (
+            columns.map((column: Column) => (
               <Table.HeaderCell
                 key={column.label}
                 sorted={column.label === sortColumn ? sortDirection : undefined}
-                onClick={sorting ? handleSort(column.dataIndex) : undefined}
+                onClick={
+                  sorting && "dataIndex" in column
+                    ? handleSort(column.dataIndex)
+                    : undefined
+                }
               >
                 {column.label}
               </Table.HeaderCell>
@@ -73,9 +85,11 @@ const DataTable = (props: DataTableProps) => {
         {data.map((datum: Map) => (
           <Table.Row key={data.indexOf(datum)}>
             {columns &&
-              columns.map((column: DataTableColumn) => (
-                <Table.Cell key={column.dataIndex}>
-                  {datum[column.dataIndex]}
+              columns.map((column: Column, i) => (
+                <Table.Cell key={"dataIndex" in column ? column.dataIndex : i}>
+                  {"dataIndex" in column
+                    ? datum[column.dataIndex]
+                    : column.action(datum)}
                 </Table.Cell>
               ))}
           </Table.Row>

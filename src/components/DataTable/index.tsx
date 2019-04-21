@@ -11,8 +11,6 @@ interface SortingProps {
 
 interface ColumnBasics {
   label?: string;
-  renderColumn?: (props: any) => any;
-  renderFull?: (props: any) => any;
 }
 interface ActionColumn extends ColumnBasics {
   action: (props: any) => any;
@@ -20,6 +18,8 @@ interface ActionColumn extends ColumnBasics {
 
 interface DisplayColumn extends ColumnBasics {
   dataIndex: string;
+  renderColumn?: (props: any) => any;
+  renderFull?: (props: any) => any;
 }
 
 type Column = ActionColumn | DisplayColumn;

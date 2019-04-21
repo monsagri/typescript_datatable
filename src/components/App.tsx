@@ -48,7 +48,7 @@ const App = (props: any) => {
           data={data}
           keyField="name"
           columns={columns}
-          sorting={{ defaultSortBy: "name", defaultSortAscending: true }}
+          sort={{ defaultSortIndex: "name" }}
         />
       </Segment>
     </Container>

@@ -5,8 +5,8 @@ interface Map {
   [key: string]: any;
 }
 interface SortingProps {
-  defaultSortBy: string;
-  defaultSortAscending?: boolean;
+  defaultSortIndex: string;
+  sortDirection?: "ascending" | "descending";
 }
 
 interface ColumnBasics {
@@ -27,24 +27,24 @@ type Column = ActionColumn | DisplayColumn;
 interface DataTableProps {
   data: Array<Map>;
   keyField: string;
-  sorting?: SortingProps;
+  sort?: SortingProps;
   columns?: Array<Column>;
 }
 
 const DataTable = (props: DataTableProps) => {
   // Prop recovery
   let { data } = props;
-  const { columns, sorting } = props;
+  const { columns, sort } = props;
 
   // Sorting related code
   const [sortColumn, setSortColumn] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<
     "ascending" | "descending" | undefined
-  >(sorting && sorting.defaultSortAscending ? "ascending" : "descending");
+  >((sort && sort.sortDirection) || "ascending");
 
-  data = sorting // This should care about default sort direction and defaultSortBy being defined
+  data = sort // This should care about default sort direction and defaultSortIndex being defined
     ? data.sort(
-        (a: Map, b: Map) => a[sorting.defaultSortBy] - b[sorting.defaultSortBy]
+        (a: Map, b: Map) => a[sort.defaultSortIndex] - b[sort.defaultSortIndex]
       )
     : data;
 
@@ -71,7 +71,7 @@ const DataTable = (props: DataTableProps) => {
                 key={column.label}
                 sorted={column.label === sortColumn ? sortDirection : undefined}
                 onClick={
-                  sorting && "dataIndex" in column
+                  sort && "dataIndex" in column
                     ? handleSort(column.dataIndex)
                     : undefined
                 }
@@ -87,7 +87,7 @@ const DataTable = (props: DataTableProps) => {
             {columns &&
               columns.map((column: Column, i) => (
                 // Need to find better solution for keyƒ
-                <Table.Cell key={"dataIndex" in column ? column.dataIndex : i}> 
+                <Table.Cell key={"dataIndex" in column ? column.dataIndex : i}>
                   {"dataIndex" in column
                     ? column.renderColumn
                       ? column.renderColumn(datum[column.dataIndex])

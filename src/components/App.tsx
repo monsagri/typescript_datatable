@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Header, Segment } from "semantic-ui-react";
+import { Container, Header, Segment, Button } from "semantic-ui-react";
 import DataTable from "./DataTable";
 
 const data = [
@@ -19,11 +19,21 @@ const columns = [
   },
   {
     dataIndex: "price",
-    label: "Price"
+    label: "Price",
+    renderFull: (datum: any) => <span>{datum.price}</span>
   },
   {
     dataIndex: "company",
-    label: "Company"
+    label: "Company",
+    renderColumn: (companyName: string) => <strong>{companyName}</strong>
+  },
+  {
+    action: (data: any) => (
+      <Button
+        content="Sale Price"
+        onClick={() => window.alert(data.price / 2)}
+      />
+    )
   }
 ];
 

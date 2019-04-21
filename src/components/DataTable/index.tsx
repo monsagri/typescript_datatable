@@ -13,13 +13,13 @@ interface ColumnBasics {
   label?: string;
 }
 interface ActionColumn extends ColumnBasics {
-  action: (props: any) => any;
+  action: (props: any) => JSX.Element;
 }
 
 interface DisplayColumn extends ColumnBasics {
   dataIndex: string;
-  renderColumn?: (props: any) => any;
-  renderFull?: (props: any) => any;
+  renderColumn?: (props: any) => JSX.Element;
+  renderFull?: (props: any) => JSX.Element;
 }
 
 type Column = ActionColumn | DisplayColumn;
@@ -86,9 +86,14 @@ const DataTable = (props: DataTableProps) => {
           <Table.Row key={data.indexOf(datum)}>
             {columns &&
               columns.map((column: Column, i) => (
-                <Table.Cell key={"dataIndex" in column ? column.dataIndex : i}>
+                // Need to find better solution for keyƒ
+                <Table.Cell key={"dataIndex" in column ? column.dataIndex : i}> 
                   {"dataIndex" in column
-                    ? datum[column.dataIndex]
+                    ? column.renderColumn
+                      ? column.renderColumn(datum[column.dataIndex])
+                      : column.renderFull
+                      ? column.renderFull(datum)
+                      : datum[column.dataIndex]
                     : column.action(datum)}
                 </Table.Cell>
               ))}

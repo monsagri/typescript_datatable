@@ -25,6 +25,7 @@ const columns = [
   {
     dataIndex: "company",
     label: "Company",
+    selectable: true,
     renderColumn: (companyName: string) => <strong>{companyName}</strong>
   },
   {

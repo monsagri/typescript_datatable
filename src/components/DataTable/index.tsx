@@ -17,9 +17,11 @@ interface ActionColumn extends ColumnBasics {
 }
 
 interface DisplayColumn extends ColumnBasics {
+  label: string;
   dataIndex: string;
   renderColumn?: (props: any) => JSX.Element;
   renderFull?: (props: any) => JSX.Element;
+  selectable?: boolean;
 }
 
 type Column = ActionColumn | DisplayColumn;
@@ -49,7 +51,6 @@ const DataTable = (props: DataTableProps) => {
     : data;
 
   const handleSort = (clickedColumn: string) => () => {
-    console.log("clicked", clickedColumn, "sort", sortColumn);
     if (clickedColumn !== sortColumn) {
       setSortColumn(clickedColumn);
       setSortDirection("ascending");
@@ -96,7 +97,10 @@ const DataTable = (props: DataTableProps) => {
             {columns &&
               columns.map((column: Column, i) => (
                 // Need to find better solution for keyƒ
-                <Table.Cell key={"dataIndex" in column ? column.dataIndex : i}>
+                <Table.Cell
+                  key={"dataIndex" in column ? column.dataIndex : i}
+                  selectable={"selectable" in column && column.selectable}
+                >
                   {"dataIndex" in column
                     ? column.renderColumn
                       ? column.renderColumn(datum[column.dataIndex])

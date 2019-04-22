@@ -29,7 +29,7 @@ const columns = [
     renderColumn: (companyName: string) => <strong>{companyName}</strong>
   },
   {
-    label: 'Actions',
+    label: "Actions",
     actions: [
       (data: any) => (
         <Button
@@ -39,9 +39,9 @@ const columns = [
       ),
       (data: any) => (
         <Button
-          colour='red'
+          colour="red"
           content="Delete"
-          onClick={() => window.alert('its gone')}
+          onClick={() => window.alert("its gone")}
         />
       )
     ]
@@ -60,6 +60,7 @@ const App = (props: any) => {
           keyField="name"
           columns={columns}
           sort={{ defaultSortIndex: "name" }}
+          searchable={true}
         />
       </Segment>
     </Container>

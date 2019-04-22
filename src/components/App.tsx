@@ -28,12 +28,22 @@ const columns = [
     renderColumn: (companyName: string) => <strong>{companyName}</strong>
   },
   {
-    action: (data: any) => (
-      <Button
-        content="Sale Price"
-        onClick={() => window.alert(data.price / 2)}
-      />
-    )
+    label: 'Actions',
+    actions: [
+      (data: any) => (
+        <Button
+          content="Sale Price"
+          onClick={() => window.alert(data.price / 2)}
+        />
+      ),
+      (data: any) => (
+        <Button
+          colour='red'
+          content="Delete"
+          onClick={() => window.alert('its gone')}
+        />
+      )
+    ]
   }
 ];
 

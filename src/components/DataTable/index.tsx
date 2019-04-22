@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table } from "semantic-ui-react";
+import { Icon, Table } from "semantic-ui-react";
 
 interface Map {
   [key: string]: any;
@@ -13,7 +13,7 @@ interface ColumnBasics {
   label?: string;
 }
 interface ActionColumn extends ColumnBasics {
-  action: (props: any) => JSX.Element;
+  actions: Array<(props: any) => JSX.Element>;
 }
 
 interface DisplayColumn extends ColumnBasics {
@@ -49,6 +49,7 @@ const DataTable = (props: DataTableProps) => {
     : data;
 
   const handleSort = (clickedColumn: string) => () => {
+    console.log("clicked", clickedColumn, "sort", sortColumn);
     if (clickedColumn !== sortColumn) {
       setSortColumn(clickedColumn);
       setSortDirection("ascending");
@@ -69,7 +70,11 @@ const DataTable = (props: DataTableProps) => {
             columns.map((column: Column) => (
               <Table.HeaderCell
                 key={column.label}
-                sorted={column.label === sortColumn ? sortDirection : undefined}
+                sorted={
+                  "dataIndex" in column && column.dataIndex === sortColumn
+                    ? sortDirection
+                    : undefined
+                }
                 onClick={
                   sort && "dataIndex" in column
                     ? handleSort(column.dataIndex)
@@ -77,6 +82,10 @@ const DataTable = (props: DataTableProps) => {
                 }
               >
                 {column.label}
+
+                {sort &&
+                  !("actions" in column) &&
+                  column.dataIndex !== sortColumn && <Icon name={"sort"} />}
               </Table.HeaderCell>
             ))}
         </Table.Row>
@@ -94,7 +103,7 @@ const DataTable = (props: DataTableProps) => {
                       : column.renderFull
                       ? column.renderFull(datum)
                       : datum[column.dataIndex]
-                    : column.action(datum)}
+                    : column.actions.map(action => action(datum))}
                 </Table.Cell>
               ))}
           </Table.Row>

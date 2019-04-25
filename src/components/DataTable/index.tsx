@@ -1,5 +1,8 @@
 import React, { useState, Fragment } from "react";
 import { Icon, Table, Input, Segment } from "semantic-ui-react";
+import common from "common-react";
+
+console.log("common", common);
 
 interface Map {
   [key: string]: any;
